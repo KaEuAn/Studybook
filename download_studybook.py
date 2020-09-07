@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import requests
 import os
+from PIL import Image
 
 
 def download_from_the_internet(url):
@@ -28,6 +29,7 @@ pdf = FPDF()
 url = 'https://reader.lecta.rosuchebnik.ru/8233-63/data/page-{}.xhtml'
 image_url = 'https://reader.lecta.rosuchebnik.ru/8233-63/data/'
 template_image = "temp{}.png"
+image_list = []
 
 for i in range(1, 370):
     temp_image = template_image.format(i)
@@ -46,6 +48,9 @@ for i in range(1, 370):
             f.write(image_data)
         
         sleep(0.2)        
-    pdf.add_page()
-    pdf.image(temp_image)
-pdf.output("algebra8.pdf", "F")
+    image_list.append(temp_image)
+
+ll = []
+for im in image_list:
+    ll.append(Image.open(im).convert("RGB"))
+ll[0].save("algebra8.pdf", save_all=True, append_images=ll[1:])
